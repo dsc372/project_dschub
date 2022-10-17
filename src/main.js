@@ -8,6 +8,8 @@ import './styles/index.less'//加载全局样式
 import Vant from 'vant'
 import 'vant/lib/index.css'
 
+import 'amfe-flexible'//自动设置rem基准值
+
 Vue.use(Vant)
 
 Vue.config.productionTip = false
