@@ -1,5 +1,5 @@
 <template>
-    <div class="login-container">
+     <div class="login-container">
         <van-nav-bar title="注册/登录" left-arrow @click-left="$router.back()" class="app-nav-bar" />
         <van-form ref="loginForm" :show-error="false" :show-error-message="false" validate-first @submit="onLogin"
             @failed="onFailed">
@@ -58,6 +58,7 @@ export default {
             try {
                 let res=await reqLogin(this.user)
                 this.$store.commit('setUser',res.data.data)
+                this.$router.back()
                 Toast.success({
                     message: '登录成功'
                 })
@@ -115,7 +116,7 @@ export default {
     padding: 20px;
 
     .login-btn {
-        background-color: #6db4fb;
+        background-color: #333;
         border: 0;
         border-radius: 8px;
         font-size: 16px;

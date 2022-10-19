@@ -14,3 +14,10 @@ export const reqCode =(mobile)=>{
         url:`/v1_0/sms/codes/${mobile}`
     })
 }
+
+export const reqUserInfo=(token)=>{
+    return request({
+        method:'GET',
+        url:'/v1_0/user',
+    })
+}

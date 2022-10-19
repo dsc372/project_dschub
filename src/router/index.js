@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import {getItem} from '@/utils/storage'
 
 Vue.use(VueRouter)
 
@@ -31,7 +32,17 @@ const routes = [
       {
         path:'/my',//默认子路由
         name:'my',
-        component:()=>import('@/views/my')
+        component:()=>import('@/views/my'),
+        beforeEnter: (to, from, next) => {
+            if(getItem('user')){
+              next()
+            }else{
+              if(from.path==='/login')next('/')
+              else {
+                next('/login')
+              }
+            }
+        }
       }
     ]
   }
