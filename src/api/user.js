@@ -21,3 +21,10 @@ export const reqUserInfo=(token)=>{
         url:'/v1_0/user',
     })
 }
+
+export const reqChannels=()=>{
+    return request({
+        method:'GET',
+        url:'/v1_0/user/channels'
+    })
+}

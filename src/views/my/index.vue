@@ -39,6 +39,7 @@
 
 <script>
 import { reqUserInfo } from '@/api/user'
+import { Toast } from 'vant';
 export default {
     name: 'my',
     data() {
