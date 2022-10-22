@@ -1,7 +1,7 @@
 <template>
     <div class="home-container">
         <van-nav-bar class="app-nav-bar">
-            <van-button slot="title" round class="search-btn">
+            <van-button slot="title" round class="search-btn" to="/search">
                 <van-icon name="search" size="20"></van-icon>
             </van-button>
         </van-nav-bar>

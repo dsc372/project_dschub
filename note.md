@@ -3,3 +3,7 @@
 3.localStorage（持久化）和vuex（为了使用方便）结合存储token
 4.编辑频道后，若未登录则存在道本地，登录了存到用户信息中
 5.如果登录了，channels为用户的channels，若未登录但local storage中有channels用local storage中的channels，否则就请求默认的
+6.搜索关键词高亮：给关键词包裹html标签，然后设置颜色，用v-html指令
+highlight(val) {
+    return val?val.replace(new RegExp(this.searchText, 'gi'), `<span style="color:red;"{this.searchText}</span>`):val
+}
