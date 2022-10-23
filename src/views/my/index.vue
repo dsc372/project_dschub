@@ -40,11 +40,12 @@
 <script>
 import { reqUserInfo } from '@/api/user'
 import { Toast } from 'vant';
+import { removeItem } from '@/utils/storage';
 export default {
     name: 'my',
     data() {
         return {
-            userInfo:{},
+            userInfo: {},
         }
     },
     methods: {
@@ -68,10 +69,19 @@ export default {
                     let res = await reqUserInfo(user.token)
                     this.userInfo = res.data.data
                 } catch (error) {
-                    Toast.fail({
-                        message: '获取用户信息失败'
-                    })
-                    this.$router.push('/home')
+                    if (error.response.status === 401) {
+                        removeItem('user')
+                        Toast.fail({
+                            message: '身份信息过期失败'
+                        })
+                        this.$router.push('/login')
+                    }else{
+                        Toast.fail({
+                            message: '获取用户信息失败'
+                        })
+                        this.$router.push('/')
+                    }
+
                 }
             }
         }

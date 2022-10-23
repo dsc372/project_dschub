@@ -6,7 +6,7 @@
         </form>
         <search-result v-if="isResultShow" :searchText="searchText"></search-result>
         <search-suggestion v-else-if="searchText" :searchSuggestionList="searchSuggestion" :searchText="searchText" @search="onSearch"></search-suggestion>
-        <search-history v-else :searchHistory="searchHistory"></search-history>
+        <search-history v-else :searchHistory="searchHistory" @search="onSearch"></search-history>
     </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
             setItem('search-history',this.searchHistory)
             this.isResultShow = true
         },
-         onInput:debounce(async function(val) {
+        onInput:debounce(async function(val) {
             if (this.searchText !== '') {
                 try {
                     let res = await reqSearchSuggestion(val)
