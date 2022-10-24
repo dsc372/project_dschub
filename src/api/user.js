@@ -28,3 +28,20 @@ export const reqChannels=()=>{
         url:'/v1_0/user/channels'
     })
 }
+
+export const reqAddFollow=(userId)=>{
+    return request({
+        method:'POST',
+        url:'/v1_0/user/followings',
+        data:{
+            target:userId
+        }
+    })
+}
+
+export const reqDelFollow=(userId)=>{
+    return request({
+        method:'DELETE',
+        url:`/v1_0/user/followings/${userId}`
+    })
+}

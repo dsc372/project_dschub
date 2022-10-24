@@ -1,8 +1,7 @@
 <template>
     <div class="search-container">
         <form action="/">
-            <van-search v-model="searchText" placeholder="请输入搜索关键字" show-action @search="onSearch(searchText)" @cancel="$router
-            .back()" @focus="isResultShow=false" @input="onInput"></van-search>
+            <van-search v-model="searchText" placeholder="请输入搜索关键字" show-action @search="onSearch(searchText)" @cancel="onCancel" @focus="isResultShow=false" @input="onInput"></van-search>
         </form>
         <search-result v-if="isResultShow" :searchText="searchText"></search-result>
         <search-suggestion v-else-if="searchText" :searchSuggestionList="searchSuggestion" :searchText="searchText" @search="onSearch"></search-suggestion>
@@ -15,7 +14,7 @@ import SearchHistory from './components/search-history/search-history.vue';
 import SearchResult from './components/search-result/search-result.vue';
 import searchSuggestion from './components/search-suggestion/search-suggestion.vue';
 import { reqSearchSuggestion} from '@/api/search'
-import {setItem,getItem} from '@/utils/storage'
+import {setItem,getItem,removeItem} from '@/utils/storage'
 import { Toast } from 'vant';
 import {debounce} from 'lodash'
 export default {
@@ -23,7 +22,7 @@ export default {
     components: { searchSuggestion, SearchHistory, SearchResult },
     data() {
         return {
-            searchText: '',
+            searchText: getItem('search-text')||'',
             searchSuggestion: [],
             searchHistory:getItem('search-history')||[],
             isResultShow: false,
@@ -38,6 +37,7 @@ export default {
             }
             this.searchHistory.unshift(searchText)
             setItem('search-history',this.searchHistory)
+            setItem('search-text',this.searchText)
             this.isResultShow = true
         },
         onInput:debounce(async function(val) {
@@ -50,6 +50,10 @@ export default {
                 }
             }
         },500),
+        onCancel(){
+            this.$router.back()
+            removeItem('search-text')
+        }
     },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="search-suggestion-history">
         <van-cell v-if="searchSuggestionList.length===0" title="暂无搜索建议" icon="search"></van-cell>
-        <van-cell v-for="(suggestion,index) in searchSuggestionList" :key="index" icon="search" @click="$emit('search',suggestion)">
+        <van-cell v-for="(suggestion,index) in searchSuggestionList" :key="index" icon="search" @click.stop="$emit('search',suggestion)">
             <div slot="title" v-html="highlight(suggestion)||'暂无搜索建议'"></div>
         </van-cell>
     </div>
@@ -15,8 +15,7 @@ export default {
             type: Array,
             required: true
         },
-        searchText: {
-            type: String,
+        searchText:{
             required: true,
         }
     },

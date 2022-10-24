@@ -7,3 +7,7 @@
 highlight(val) {
     return val?val.replace(new RegExp(this.searchText, 'gi'), `<span style="color:red;"{this.searchText}</span>`):val
 }
+*7.回复评论中的内容相同是因为popup组件是懒渲染,通过v-if解决
+<van-popup v-model="showAllCommtentPopup" position="bottom">
+    <CommentReply :comment="replyComment" v-if="showAllCommtentPopup"></CommentReply>
+</van-popup>
