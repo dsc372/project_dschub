@@ -11,3 +11,25 @@ highlight(val) {
 <van-popup v-model="showAllCommtentPopup" position="bottom">
     <CommentReply :comment="replyComment" v-if="showAllCommtentPopup"></CommentReply>
 </van-popup>
+8.当传递给子组件的数据既要使用，又要修改，此时可以给子组件使用v-model(一个子组件只能使用一次，若要使用多个，可以考虑syns)
+v-model="user.name"的作用等同于
+:value="user.name"并默认监听子组件中的input事件@input="user.name=$event"
+9.编辑头像，选择文件
+<input type="file" hidden accept="image/*" ref="file">
+<van-cell title="头像" is-link @click="$refs.file.click()">
+    <van-image width="30" height="30" round fit="cover" :src="userProfile.photo">van-image>
+</van-cell>
+10.处理打开相同文件不触发onChange：
+onFileChange(){
+    this.$refs.file.value=''
+}
+11.修改头像要提交formdata数据
+props: {
+    newPhoto: {
+       type: File,
+        required: true,
+    }
+},
+const fd=new FormData()
+fd.append('photo',this.newPhoto)
+以上是无裁剪版，裁剪版见代码

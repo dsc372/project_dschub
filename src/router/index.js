@@ -55,6 +55,11 @@ const routes = [
     path:'/article/:articleId',
     name:'article',
     component:()=>import('@/views/articleInfo')
+  },
+  {
+    path:'/user/profile',
+    name:'user-profile',
+    component:()=>import('@/views/user-profile')
   }
 ]
 

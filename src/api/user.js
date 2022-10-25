@@ -45,3 +45,26 @@ export const reqDelFollow=(userId)=>{
         url:`/v1_0/user/followings/${userId}`
     })
 }
+
+export const reqUserProfile=()=>{
+    return request({
+        method:'GET',
+        url:'/v1_0/user/profile'
+    })
+}
+
+export const reqUpdateUserProfile=(data)=>{
+    return request({
+        method:'PATCH',
+        url:'/v1_0/user/profile',
+        data
+    })
+}
+
+export const reqUpdateUserPhoto=(data)=>{
+    return request({
+        method:'PATCH',
+        url:'/v1_0/user/photo',
+        data
+    })
+}

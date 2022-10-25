@@ -7,7 +7,7 @@
                     <div class="name">{{userInfo.name}}</div>
                     <div class="welcome">ID:{{userInfo.name}}</div>
                 </div>
-                <div class="change-info">
+                <div class="change-info" @click="$router.push('/user/profile')">
                     <van-icon name="setting-o" color="#aaa" size="20"></van-icon>
                     <van-icon name="arrow" color="#aaa" size="20"></van-icon>
                 </div>
