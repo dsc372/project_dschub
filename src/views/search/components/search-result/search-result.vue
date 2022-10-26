@@ -1,5 +1,5 @@
 <template>
-    <div class="search-result">
+    <div class="search-result" ref="articleList">
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
             <ArticleItem v-for="article in searchResult" :key="article.art_id" :article="article"></ArticleItem>
         </van-list>
@@ -10,15 +10,18 @@
 import {reqSearchResult} from '@/api/search'
 import { Toast } from 'vant'
 import ArticleItem from '@/components/article-item/index.vue'
+import {debounce} from 'lodash'
 export default {
     name: "search-result",
+    components: { ArticleItem },
     data() {
         return {
             searchResult: [],
             loading: false,
             finished: false,
             page: 1,
-            prePage: 10
+            prePage: 10,
+            scrollTop:0,
         };
     },
     props: {
@@ -49,7 +52,16 @@ export default {
             }
         },
     },
-    components: { ArticleItem }
+    mounted(){
+        const articleList=this.$refs['articleList']
+        articleList.onscroll=debounce(()=>{
+            this.scrollTop=articleList.scrollTop
+        },50)
+    },
+    activated(){
+        console.log(1)
+        this.$refs['articleList'].scrollTop=this.scrollTop
+    }
 }
 </script>
 

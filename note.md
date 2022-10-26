@@ -33,3 +33,37 @@ props: {
 const fd=new FormData()
 fd.append('photo',this.newPhoto)
 以上是无裁剪版，裁剪版见代码
+12.组件缓存
+<keep-alive :include="['tabbar','search']">
+  <router-view/>
+</keep-alive>
+但是会导致切换用户后数据仍是前一个用户的数据，需要刷新
+解决方案：
+在vuex中添加
+cachePages:['search','tabbar']
+addCachePage(state,pageName){
+      if(!state.cachePages.includes(pageName)){
+        state.cachePages.push(pageName)
+  }
+},
+removeCachePage(state,pageName){
+  const index=state.cachePages.indexOf(pageName)
+  if(state.cachePages.indexOf(pageName)!==-1){
+    state.cachePages.splice(index,1)
+  }
+},
+在App.vue中用<keep-alive :include="cachePages">
+退出登录时removeCachePage
+登录时addCachePage
+15.滚动位置的缓存
+在article-list组件中
+mounted(){
+    const articleList=this.$refs['articleList']
+    articleList.onscroll=debounce(()=>{
+        this.scrollTop=articleList.scrollTop
+    },50)
+},
+activated(){
+    this.$refs['articleList'].scrollTop=this.scrollTop
+}
+16.用响应拦截器对请求错误进行拦截，针对401，进行重新登录或refresh（refresh后request(error.config)，此时请求头有个小bug）处理

@@ -14,7 +14,7 @@ import SearchHistory from './components/search-history/search-history.vue';
 import SearchResult from './components/search-result/search-result.vue';
 import searchSuggestion from './components/search-suggestion/search-suggestion.vue';
 import { reqSearchSuggestion} from '@/api/search'
-import {setItem,getItem,removeItem} from '@/utils/storage'
+import {setItem,getItem} from '@/utils/storage'
 import { Toast } from 'vant';
 import {debounce} from 'lodash'
 export default {
@@ -22,7 +22,7 @@ export default {
     components: { searchSuggestion, SearchHistory, SearchResult },
     data() {
         return {
-            searchText: getItem('search-text')||'',
+            searchText:'',
             searchSuggestion: [],
             searchHistory:getItem('search-history')||[],
             isResultShow: false,
@@ -37,7 +37,6 @@ export default {
             }
             this.searchHistory.unshift(searchText)
             setItem('search-history',this.searchHistory)
-            setItem('search-text',this.searchText)
             this.isResultShow = true
         },
         onInput:debounce(async function(val) {
@@ -51,8 +50,9 @@ export default {
             }
         },500),
         onCancel(){
+            this.searchText='',
+            this.isResultShow=false
             this.$router.back()
-            removeItem('search-text')
         }
     },
 }

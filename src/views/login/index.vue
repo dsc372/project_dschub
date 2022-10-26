@@ -61,6 +61,7 @@ export default {
             try {
                 let res = await reqLogin(this.user)
                 this.$store.commit('setUser', res.data.data)
+                this.$store.commit('addCachePage','tabbar')
                 this.$router.back()
                 Toast.success({
                     message: '登录成功'

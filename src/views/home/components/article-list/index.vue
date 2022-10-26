@@ -1,5 +1,5 @@
 <template>
-    <div class="article-list">
+    <div class="article-list" ref="articleList">
         <van-pull-refresh v-model="isPullDownLoading" @refresh="onRefresh" :success-text="refreshSuccessText">
             <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
                 <ArticleItem v-for="article in articleList" :key="article.art_id" :article="article"/>
@@ -13,8 +13,10 @@
 import { reqArticles } from '@/api/article'
 import { Toast } from 'vant';
 import ArticleItem from '@/components/article-item/index.vue';
+import {debounce} from 'lodash'
 export default {
     name: "artcle-list",
+    components: { ArticleItem },
     props: {
         channel: {
             type: Object,
@@ -29,6 +31,7 @@ export default {
             timestamp: null,
             isPullDownLoading: false,
             refreshSuccessText: "",
+            scrollTop:0,
         };
     },
     methods: {
@@ -66,7 +69,15 @@ export default {
             }
         }
     },
-    components: { ArticleItem }
+    mounted(){
+        const articleList=this.$refs['articleList']
+        articleList.onscroll=debounce(()=>{
+            this.scrollTop=articleList.scrollTop
+        },50)
+    },
+    activated(){
+        this.$refs['articleList'].scrollTop=this.scrollTop
+    }
 }
 </script>
 
