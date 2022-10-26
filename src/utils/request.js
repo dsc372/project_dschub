@@ -38,7 +38,8 @@ request.interceptors.response.use(
       } else if (status === 401) {
         const { user } = store.state
         if (!user || !user.token) {
-          return redirectToLogin()
+          redirectToLogin()
+          return Promise.reject(error)
         }
         try {
           let res = await refreshTokenReq({
@@ -54,7 +55,8 @@ request.interceptors.response.use(
           error.config.headers={}//不写的话会有一个莫名其妙的bug
           return request(error.config)
         } catch (error) {
-          return redirectToLogin()
+          redirectToLogin()
+          return Promise.reject(error)
         }
       } else if (status === 403) {
         Toast.fail("没有操作权限")

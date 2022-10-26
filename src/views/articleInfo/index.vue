@@ -88,10 +88,11 @@ export default {
                 else {
                     await reqAddCollect(this.articleInfo.art_id);
                 }
+                Toast.success("操作成功");
                 this.articleInfo.is_collected = !this.articleInfo.is_collected;
             }
             catch (error) {
-                Toast.fail("修改关注信息失败");
+                Toast.fail("修改收藏信息失败");
             }
         },
         async onLike() {
@@ -108,6 +109,7 @@ export default {
                     await reqAddLike(this.articleInfo.art_id);
                     this.articleInfo.attitude = 1;
                 }
+                Toast.success("操作成功");
             }
             catch (error) {
                 Toast.fail("修改点赞信息失败");
