@@ -1,14 +1,16 @@
 <template>
     <div class="comment-list">
-        <van-cell :title="type==='c'?'所有回复':'全部评论'"></van-cell>
+        <van-cell :title="type === 'c' ? '所有回复' : '全部评论'"></van-cell>
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad(type)">
-            <CommentItem v-for="comment in commentList" :key="comment.com_id" :comment="comment" @onCommentReply="$emit('onReplyClick',$event)"></CommentItem>
+            <CommentItem v-for="(comment, index) in commentList" :key="comment.commentId" :comment="comment"
+                @onCommentReply="$emit('onReplyClick', $event)" @onDelCommentForList="onDelCommentForList(index,$event)" :showReply="showReply">
+            </CommentItem>
         </van-list>
     </div>
 </template>
 
 <script>
-import {reqComments} from '@/api/comment'
+import { reqComments, reqReplies } from '@/api/comment'
 import { Toast } from 'vant';
 import CommentItem from '../comment-item/index.vue';
 export default {
@@ -17,8 +19,8 @@ export default {
         return {
             loading: false,
             finished: false,
-            offset: null,
-            limit: 10,
+            offset: 0,
+            size: 5,
         };
     },
     props: {
@@ -26,28 +28,32 @@ export default {
             type: [Number, String, Object],
             required: true,
         },
-        type:{
-            type:String,
-            default:'a'
+        type: {
+            type: String,
+            default: 'a'
         },
-        commentList:{
-            type:Array,
-            default:()=>[]
+        commentList: {
+            type: Array,
+            default: () => []
+        },
+        showReply: {
+            type: Boolean,
+            default: true
         }
     },
     methods: {
         async onLoad(type) {
+            let res = new Array()
             try {
-                let res = await reqComments({
-                    type: type,
-                    source: this.source,
-                    offset: this.offset,
-                    limit: this.limit,
-                });
-                this.commentList.push(...res.data.data.results);
+                if (type === 'a') {
+                    res = await reqComments(this.offset, this.size, this.source);
+                } else if (type === 'c') {
+                    res = await reqReplies(this.offset, this.size, this.source)
+                }
+                this.commentList.push(...res.data.comment);
                 this.loading = false;
-                if (res.data.data.results.length)
-                    this.offset = res.data.data.last_id;
+                if (res.data.comment.length)
+                    this.offset += this.size
                 else
                     this.finished = true;
             }
@@ -55,6 +61,10 @@ export default {
                 Toast.fail("加载评论失败");
             }
         },
+        onDelCommentForList(index,event){
+            this.commentList.splice(index,1)
+            this.$emit('onDelSuccess',event)
+        }
     },
     components: { CommentItem }
 }

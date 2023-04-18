@@ -1,5 +1,5 @@
 <template>
-    <div class="login-container" :style="'height:'+screenHeight+'px'">
+    <div class="login-container" :style="'height:' + screenHeight + 'px'">
         <van-nav-bar left-arrow left-text="返回" right-text="帮助" @click-left="$router.back()" :border="false" />
         <div class="login-way">
             <div class="login-way-title">手机验证码登录</div>
@@ -7,14 +7,13 @@
         </div>
         <van-form ref="loginForm" :show-error="false" :show-error-message="false" validate-first @submit="onLogin"
             @failed="onFailed" style="margin:10px">
-            <van-field name="mobile" v-model="user.mobile" left-icon="phone" placeholder="请输入手机号"
-                :rules="formRules.mobile" />
-            <van-field name="code" v-model="user.code" clearable left-icon="lock" placeholder="请输入验证码"
-                :rules="formRules.code">
+            <van-field name="mobile" v-model="user.phone" left-icon="phone" placeholder="请输入手机号" :rules="formRules.phone" />
+            <van-field name="code" v-model="user.verificationCode" clearable left-icon="lock" placeholder="请输入验证码"
+                :rules="formRules.verificationCode">
                 <template #button>
                     <van-button size="small" class="code-btn" @click.prevent="onGetCode" :disabled="isCountDownShow">
                         <span v-if="!isCountDownShow">发送验证码</span>
-                        <van-count-down :time="1000*60" format="ss 秒" @finish="{{isCountDownShow=false}}" v-else />
+                        <van-count-down :time="1000 * 60" format="ss 秒" @finish="{{ isCountDownShow = false }}" v-else />
                     </van-button>
                 </template>
             </van-field>
@@ -27,23 +26,23 @@
 </template>
 
 <script>
-import { reqLogin, reqCode } from '@/api/user'
+import { reqLogin } from '@/api/user'
 import { Toast } from 'vant'
 export default {
     name: 'login',
     data() {
         return {
-            screenHeight:  document.documentElement.clientHeight,
+            screenHeight: document.documentElement.clientHeight,
             user: {
-                mobile: '',
-                code: '',
+                phone: '',
+                verificationCode: '',
             },
             formRules: {
-                mobile: [
+                phone: [
                     { required: true, message: '手机号不能为空' },
                     { pattern: /^1(3|4|5|7|8)\d{9}$/, message: '手机号格式错误' },
                 ],
-                code: [
+                verificationCode: [
                     { required: true, message: '验证码不能为空' },
                     { pattern: /^\d{6}$/, message: '验证码格式错误' },
                 ]
@@ -60,16 +59,23 @@ export default {
             })
             try {
                 let res = await reqLogin(this.user)
-                this.$store.commit('setUser', res.data.data)
-                this.$store.commit('addCachePage','tabbar')
+                this.$store.commit('setUser', res.data.token)
+                this.$store.commit('setUserId', res.data.id)
+                this.$store.commit('addCachePage', 'tabbar')
                 this.$router.back()
                 Toast.success({
                     message: '登录成功'
                 })
             } catch (error) {
-                Toast.fail({
-                    message: '登录失败'
+                if (error.response.data) {
+                    Toast.fail({
+                        message: error.response.data
+                    })
+                }else{
+                    Toast.fail({
+                    message: '未知错误，登陆失败'
                 })
+                }
             }
         },
         onFailed(error) {
@@ -80,13 +86,11 @@ export default {
         async onGetCode() {
             try {
                 await this.$refs.loginForm.validate('mobile')
-                await reqCode(this.user.mobile)
                 this.isCountDownShow = true
+                Toast.success('验证码已发送')
             } catch (error) {
                 let message = ''
-                if (error && error.response && error.response.status === 429) {
-                    message = '发送太频繁了,请稍后重试'
-                } else if (error.name === 'mobile') {
+                if (error && error.name === 'mobile') {
                     message = error.message
                 } else {
                     message = '未知错误'
@@ -101,16 +105,19 @@ export default {
 </script>
 
 <style lang="less">
-.login-container{
+.login-container {
     background-color: #fff;
 }
-.login-way{
-    margin:30px 25px 30px 25px;
-    .login-way-title{
+
+.login-way {
+    margin: 30px 25px 30px 25px;
+
+    .login-way-title {
         font-size: 20px;
         font-weight: 400;
     }
-    .login-way-info{
+
+    .login-way-info {
         margin-top: 10px;
         font-size: 12px;
         color: #999;

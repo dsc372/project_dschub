@@ -13,7 +13,7 @@
 
 <script>
 import io from 'socket.io-client'
-import { getItem,setItem } from '@/utils/storage'
+import { getItem } from '@/utils/storage'
 import { Toast } from 'vant'
 export default {
     name: 'UserChat',
@@ -21,12 +21,11 @@ export default {
         return {
             currentMessage: '',
             socket: null,
-            messageList: getItem('messageList')||[],
+            messageList: [],
         }
     },
     watch:{
         messageList(){
-            setItem('messageList',this.messageList)
             this.$nextTick(()=>{
                 this.scrollToBottom()//消息列表滚动到底部
             })

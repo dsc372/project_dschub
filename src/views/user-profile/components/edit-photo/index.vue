@@ -38,9 +38,8 @@ export default {
                 });
                 const file=await this.getCroppedCanvas()
                 const fd=new FormData()
-                fd.append('photo',file)
-                let res=await reqUpdateUserPhoto(fd)
-                console.log(res)
+                fd.append('avatar',file)
+                await reqUpdateUserPhoto(fd)
                 this.$emit('editPhotoSuccess',file)
                 Toast.success("操作成功");
             }

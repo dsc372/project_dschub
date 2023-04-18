@@ -6,9 +6,9 @@
         </van-cell>
         <div v-for="(channel,index) in userChannels" :key="channel.id" class="channel-item">
             <van-badge color="#ccc">
-                <div class="channel-item-content">{{channel.name}}</div>
+                <div class="channel-item-content">{{channel}}</div>
                 <template #content>
-                    <van-icon name="cross" class="badge-icon" v-if="showCross&&index!==0"
+                    <van-icon name="cross" class="badge-icon" v-if="userChannels.length>1"
                         @click="onChangeChannel(index,'del')" />
                 </template>
             </van-badge>
@@ -16,9 +16,9 @@
         <van-cell center :border="false">
             <div slot="title" class="channel-edit-title">频道推荐</div>
         </van-cell>
-        <div v-for="(channel,index) in recommendChannels" :key="channel.id" class="channel-item">
+        <div v-for="(channel,index) in recommendChannels" :key="channel" class="channel-item">
             <van-badge color="#ccc">
-                <div class="channel-item-content">{{channel.name}}</div>
+                <div class="channel-item-content">{{channel}}</div>
                 <template #content>
                     <van-icon name="plus" class="badge-icon" @click="onChangeChannel(index,'add')" />
                 </template>
@@ -52,7 +52,7 @@ export default {
         recommendChannels() {
             return this.allChannels.filter(channel => {
                 return !this.userChannels.find(userChannel => {
-                    return userChannel.id === channel.id
+                    return userChannel === channel
                 })
             })
         }
@@ -61,19 +61,19 @@ export default {
         async getAllChannels() {
             try {
                 let res = await reqAllChannels()
-                this.allChannels = res.data.data.channels
+                this.allChannels = res.data.allLables
             } catch (error) {
                 Toast.fail('获取全部频道信息失败')
             }
         },
         async onChangeChannel(index, type) {
             if (type === 'add') {
-                this.userChannels.push(this.recommendChannels[index])
                 if (this.user) {
                     try {
                         await reqAddChannels({
-                            channels: [{ id: this.userChannels[this.userChannels.length - 1].id, seq: this.userChannels.length }]
+                            name:this.recommendChannels[index]
                         })
+                        this.userChannels.push(this.recommendChannels[index])
                     } catch (error) {
                         Toast.fail('添加频道失败')
                     }
@@ -84,7 +84,9 @@ export default {
                 let channel=this.userChannels.splice(index, 1)
                 if (this.user) {
                     try {
-                        await reqDelChannels(channel[0].id)
+                        await reqDelChannels({
+                            name:channel[0]
+                        })
                     } catch (error) {
                         Toast.fail('删除频道失败')
                     }

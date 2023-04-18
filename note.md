@@ -67,3 +67,9 @@ activated(){
     this.$refs['articleList'].scrollTop=this.scrollTop
 }
 16.用响应拦截器对请求错误进行拦截，针对401，进行重新登录或refresh（refresh后request(error.config)，此时请求头有个小bug）处理
+
+17、更新头像后页面刷新
+
+18、xhr的get方法不支持body传参
+
+19、删除评论时，改评论角标数字时后端要返回评论回复数

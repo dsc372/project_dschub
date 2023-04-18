@@ -2,7 +2,7 @@
     <div class="article-list" ref="articleList">
         <van-pull-refresh v-model="isPullDownLoading" @refresh="onRefresh" :success-text="refreshSuccessText">
             <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-                <ArticleItem v-for="article in articleList" :key="article.art_id" :article="article"/>
+                <ArticleItem v-for="(article,index) in articleList" :key="article.art_id" :article="article" @onDelActicle="onDelActicle(index)"/>
             </van-list>
         </van-pull-refresh>
     </div>
@@ -19,13 +19,15 @@ export default {
     components: { ArticleItem },
     props: {
         channel: {
-            type: Object,
+            type: String,
             required: true,
         }
     },
     data() {
         return {
             articleList: [],
+            offset:0,
+            size:10,
             loading: false,
             finished: false,
             timestamp: null,
@@ -37,16 +39,12 @@ export default {
     methods: {
         async onLoad() {
             try {
-                let res = await reqArticles({
-                    channel_id: this.channel.id,
-                    timestamp: this.timestamp || Date.now(),
-                });
-                this.articleList.push(...res.data.data.results);
+                let res = await reqArticles(this.offset,this.size,this.channel);
+                this.articleList.push(...res.data.articleList);
                 this.loading = false;
-                if (res.data.data.results.length) {
-                    this.timestamp = res.data.data.pre_timestamp;
-                }
-                else {
+                if (res.data.articleList.length) {
+                    this.offset+=this.size
+                }else {
                     this.finished = true;
                 }
             }
@@ -67,6 +65,9 @@ export default {
             catch (error) {
                 Toast.fail("刷新失败");
             }
+        },
+        onDelActicle(index){
+            this.articleList.splice(index,1)
         }
     },
     mounted(){

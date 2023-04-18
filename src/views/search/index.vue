@@ -13,9 +13,8 @@
 import SearchHistory from './components/search-history/search-history.vue';
 import SearchResult from './components/search-result/search-result.vue';
 import searchSuggestion from './components/search-suggestion/search-suggestion.vue';
-import { reqSearchSuggestion} from '@/api/search'
 import {setItem,getItem} from '@/utils/storage'
-import { Toast } from 'vant';
+import { reqAllChannels} from '@/api/channel'
 import {debounce} from 'lodash'
 export default {
     name: 'search',
@@ -26,6 +25,7 @@ export default {
             searchSuggestion: [],
             searchHistory:getItem('search-history')||[],
             isResultShow: false,
+            allSearchSuggestion:[]
         }
     },
     methods: {
@@ -41,11 +41,10 @@ export default {
         },
         onInput:debounce(async function(val) {
             if (this.searchText !== '') {
-                try {
-                    let res = await reqSearchSuggestion(val)
-                    this.searchSuggestion = res.data.data.options
-                } catch (error) {
-                    Toast.fail('获取搜索建议失败')
+                this.searchSuggestion.length=0
+                if(this.allSearchSuggestion.indexOf(val)!==-1){
+
+                    this.searchSuggestion.push(val)
                 }
             }
         },500),
@@ -53,8 +52,15 @@ export default {
             this.searchText='',
             this.isResultShow=false
             this.$router.back()
+        },
+        async onGetAllSearchSuggestion(){
+            const res = await reqAllChannels()
+            this.allSearchSuggestion  = res.data.allLables
         }
     },
+    created(){
+        this.onGetAllSearchSuggestion()
+    }
 }
 </script>
 

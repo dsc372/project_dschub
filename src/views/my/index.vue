@@ -2,10 +2,10 @@
     <div class="my-container">
         <van-cell-group class="my-info" style="margin-top:0 ;">
             <van-cell title="单元格" value="内容" center class="base-info" :border="false">
-                <van-image slot="icon" round fit="cover" :src="userInfo.photo" class="avatar" />
+                <van-image slot="icon" round fit="cover" :src="userInfo.avatar_url" class="avatar" />
                 <div slot="title" class="name-info">
-                    <div class="name">{{                                           userInfo.name                                           }}</div>
-                    <div class="welcome">ID:{{                                           userInfo.name                                           }}</div>
+                    <div class="name">{{ userInfo.name }}</div>
+                    <div class="welcome">ID:{{ userInfo.id }}</div>
                 </div>
                 <div class="change-info" @click="$router.push('/user/profile')">
                     <van-icon name="setting-o" color="#aaa" size="20"></van-icon>
@@ -13,17 +13,17 @@
                 </div>
             </van-cell>
             <van-grid :border="false" class="data-info">
-                <van-grid-item text="头条" class="data-info-item">
-                    <span slot="icon">{{                                           userInfo.art_count                                           }}</span>
+                <van-grid-item text="文章" class="data-info-item" to="/user/myArticle">
+                    <span slot="icon">{{ userInfo.articleCount || 0 }}</span>
+                </van-grid-item>
+                <van-grid-item text="点赞" class="data-info-item" to="/user/myLike">
+                    <span slot="icon">{{ userInfo.likeCount || 0 }}</span>
                 </van-grid-item>
                 <van-grid-item text="关注" class="data-info-item">
-                    <span slot="icon">{{                                           userInfo.follow_count                                           }}</span>
+                    <span slot="icon">{{ userInfo.fans_count || 0 }}</span>
                 </van-grid-item>
                 <van-grid-item text="粉丝" class="data-info-item">
-                    <span slot="icon">{{                                           userInfo.fans_count                                           }}</span>
-                </van-grid-item>
-                <van-grid-item text="获赞" class="data-info-item">
-                    <span slot="icon">{{                                           userInfo.like_count                                           }}</span>
+                    <span slot="icon">{{ userInfo.like_count || 0 }}</span>
                 </van-grid-item>
             </van-grid>
         </van-cell-group>
@@ -45,6 +45,7 @@ export default {
     data() {
         return {
             userInfo: {},
+            imgKey: new Date().getTime()
         }
     },
     methods: {
@@ -55,6 +56,7 @@ export default {
                 .then(() => {
                     // on confirm
                     this.$store.commit('setUser', null)
+                    this.$store.commit('setUserId', null)
                     this.$store.commit('removeCachePage', 'tabbar')
                     this.$router.push('/login')
                 })
@@ -65,23 +67,20 @@ export default {
         async getUserInfo() {
             const user = this.$store.state.user
             if (user) {
-                try {
-                    let res = await reqUserInfo(user.token)
-                    this.userInfo = res.data.data
-                } catch (error) {
-                    if (error.response.status !== 401) {
-                        Toast.fail({
-                            message: '获取用户信息失败'
-                        })
-                        this.$router.push('/login')
-                    }
+                let res = await reqUserInfo()
+                this.userInfo = res.data.userInfo
+                if (this.userInfo.name.length > 7) {
+                    this.userInfo.name = this.userInfo.name.slice(0, 7) + '...'
                 }
-            }else{
+            } else {
                 this.$router.replace('/login')
             }
         }
     },
     created() {
+        this.getUserInfo()
+    },
+    activated() {
         this.getUserInfo()
     }
 }

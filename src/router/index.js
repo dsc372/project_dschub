@@ -46,6 +46,16 @@ const routes = [
     component:()=>import('@/views/articleInfo')
   },
   {
+    path:'/user/myArticle',
+    name:'myArticle',
+    component:()=>import('@/views/article-about-me')
+  },
+  {
+    path:'/user/myLike',
+    name:'myLike',
+    component:()=>import('@/views/article-about-me')
+  },
+  {
     path:'/user/profile',
     name:'user-profile',
     component:()=>import('@/views/user-profile')

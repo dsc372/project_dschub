@@ -3,21 +3,24 @@ import request from "@/utils/request";
 export const reqAllChannels=()=>{
     return request({
         method:'GET',
-        url:'/v1_0/channels'
+        url:'/lable/getAllLables'
     })
 }
 
 export const reqAddChannels=(data)=>{
     return request({
-        method:'PATCH',
-        url:'/v1_0/user/channels',
-        data
+        method:'POST',
+        url:'/lable/addLable',
+        data,
+        contentType: "application/json;charset=utf-8"
     })
 }
 
-export const reqDelChannels=(id)=>{
+export const reqDelChannels=(data)=>{
     return request({
         method:'DELETE',
-        url:`/v1_0/user/channels/${id}`
+        url:'/lable/deleteLable',
+        data,
+        contentType: "application/json;charset=utf-8"
     })
 }

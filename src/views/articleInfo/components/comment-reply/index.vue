@@ -1,13 +1,13 @@
 <template>
     <div class="comment-replay">
-        <van-nav-bar :title="comment.reply_count+'条回复'"></van-nav-bar>
+        <van-nav-bar :title="comment.replyCount+'条回复'"></van-nav-bar>
         <CommentItem :comment="comment"></CommentItem>
-        <CommentList :source="comment.com_id" :type="'c'" :commentList="commentList"></CommentList>
+        <CommentList :source="comment.commentId" :type="'c'" :commentList="commentList" @onDelSuccess="onDelSuccess" :showReply="false"></CommentList>
         <div class="article-bottom">
             <van-button class="comment-btn" type="default" round size="small" @click="onComment">写评论</van-button>
         </div>
         <van-popup v-model="showCommtentPopup" position="bottom">
-            <PostComment :targetId="comment.com_id" :articleId="articleId" @post-success="onPostSuccess"></PostComment>
+            <PostComment :targetId="comment.commentId" :articleId="articleId" type="r" @post-success="onPostSuccess"></PostComment>
         </van-popup>
     </div>
 </template>
@@ -39,11 +39,17 @@ import PostComment from '../post-comment/index.vue';
         onComment(){
             this.showCommtentPopup=true
         },
-        onPostSuccess(new_obj){
+        onPostSuccess(commentInfo){
             this.showCommtentPopup=false
-            this.commentList.unshift(new_obj)
-            this.comment.reply_count++
+            this.commentList.unshift(commentInfo)
+            this.comment.replyCount++
+            this.$emit('post-success')
         },
+        onDelSuccess(replyCount){
+            console.log(replyCount)
+            this.comment.replyCount-=(replyCount+1)
+            this.$emit('onDelSuccess',replyCount)
+        }
     }
 }
 </script>

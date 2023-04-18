@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { reqUpdateUserProfile } from '@/api/user'
+import { reqUpdateUserName } from '@/api/user'
 import { Toast } from 'vant';
 export default {
     name: 'EditName',
@@ -32,13 +32,13 @@ export default {
                     message: "操作中",
                     forbidClick: true
                 });
-                await reqUpdateUserProfile({ name: this.message })
+                await reqUpdateUserName({ newName: this.message })
                 this.$emit('editNameSuccess', this.message)
                 Toast.success("操作成功");
             }
             catch (error) {
                 if (error && error.response && error.response.status === 409) {
-                    Toast.fail("改昵称已存在");
+                    Toast.fail("该昵称已存在");
                 } else {
                     Toast.fail("修改昵称失败");
                 }

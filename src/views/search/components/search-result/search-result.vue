@@ -1,13 +1,13 @@
 <template>
     <div class="search-result" ref="articleList">
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-            <ArticleItem v-for="article in searchResult" :key="article.art_id" :article="article"></ArticleItem>
+            <ArticleItem v-for="article in searchResult" :key="article.articleId" :article="article"></ArticleItem>
         </van-list>
     </div>
 </template>
 
 <script>
-import {reqSearchResult} from '@/api/search'
+import { reqArticles } from '@/api/article'
 import { Toast } from 'vant'
 import ArticleItem from '@/components/article-item/index.vue'
 import {debounce} from 'lodash'
@@ -19,8 +19,8 @@ export default {
             searchResult: [],
             loading: false,
             finished: false,
-            page: 1,
-            prePage: 10,
+            offset: 0,
+            size: 5,
             scrollTop:0,
         };
     },
@@ -33,17 +33,12 @@ export default {
     methods: {
         async onLoad() {
             try {
-                const res = await reqSearchResult({
-                    page: this.page,
-                    per_page: this.prePage,
-                    q: this.searchText,
-                });
-                this.searchResult.push(...res.data.data.results);
+                const res = await reqArticles(this.offset,this.size,this.searchText);
+                this.searchResult.push(...res.data.articleList);
                 this.loading = false;
-                if (res.data.data.results.length) { //本次请求还有数据
-                    this.page++;
-                }
-                else {
+                if (res.data.articleList.length) {
+                    this.offset+=this.size
+                }else {
                     this.finished = true;
                 }
             }
@@ -59,7 +54,6 @@ export default {
         },50)
     },
     activated(){
-        console.log(1)
         this.$refs['articleList'].scrollTop=this.scrollTop
     }
 }

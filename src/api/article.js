@@ -1,50 +1,65 @@
 import request from "@/utils/request";
 
-export const reqArticles=(params)=>{
+export const reqArticles=(offset,size,lable)=>{
     return request({
         method:'GET',
-        url:'/v1_0/articles',
-        params
+        url:`/article/getArticleListByLable?offset=${offset}&size=${size}&lable=${lable}`,
+        contentType: "application/json;charset=utf-8",
     })
 }
 
 export const reqArticleInfo=(articleId)=>{
     return request({
         method:'GET',
-        url:`/v1_0/articles/${articleId}`
+        url:`/article/getArticleDetail/${articleId}`
     })
 }
 
-export const reqAddCollect=(articleId)=>{
-    return request({
-        method:'POST',
-        url:'/v1_0/article/collections',
-        data:{
-            target:articleId
-        }
-    })
-}
-
-export const reqDelCollect=(articleId)=>{
+export const reqDelArticle=(articleId)=>{
     return request({
         method:'DELETE',
-        url:`/v1_0/article/collections/${articleId}`
+        url:`/article/deleteArticle/${articleId}`
+    })
+}
+
+export const reqAddArticle=(data)=>{
+    return request({
+        method:'POST',
+        url:'/article/createArticle',
+        data
+    })
+}
+
+export const reqAddArticlePhoto=(articleId,data)=>{
+    return request({
+        method:'POST',
+        url:`/upload/picture/${articleId}`,
+        data,
+        contentType:'multipart/form-data'
     })
 }
 
 export const reqAddLike=(articleId)=>{
     return request({
         method:'POST',
-        url:'/v1_0/article/likings',
+        url:'/article/addArticleLike',
         data:{
-            target:articleId
-        }
+            articleId
+        },
+        contentType: "application/json;charset=utf-8",
     })
 }
 
 export const reqDelLike=(articleId)=>{
     return request({
         method:'DELETE',
-        url:`/v1_0/article/likings/${articleId}`
+        url:`/article/delArticleLike/${articleId}`
+    })
+}
+
+export const reqLikeArticles=(offset,size)=>{
+    return request({
+        method:'GET',
+        url:`/article/getArticleListByLike?offset=${offset}&size=${size}`,
     })
 }

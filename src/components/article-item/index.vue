@@ -1,31 +1,66 @@
 <template>
-    <van-cell class="article-item" :to="{name:'article',params:{articleId:article.art_id}}">
-        <div slot="title" class="title van-multi-ellipsis--l3">{{article.title}}</div>
+    <van-cell class="article-item" :to="{ name: 'article', params: { articleId: article.articleId } }">
+        <div slot="title" class="title van-multi-ellipsis--l3">{{ article.title }}</div>
         <div slot="label">
-            <div class="cover-wrap" v-if="article.cover.type===3">
-                <div class="cover-wrap-item" v-for=" (img,index) in article.cover.images" :key="index">
+            <div class="cover-wrap" v-if="article.images && article.images.length === 3">
+                <div class="cover-wrap-item" v-for=" (img, index) in article.images" :key="index">
                     <van-image :src="img" fit="cover" class="cover-item"></van-image>
                 </div>
             </div>
             <div class="label-wrap">
-                <span>{{article.aut_name}}</span>
-                <span>{{article.comm_count}}评论</span>
-                <span>{{article.pubdate}}</span>
+                <span>{{ article.author.name }}</span>
+                <span>{{ article.lable }}</span>
+                <span>{{ article.commentCount }}评论</span>
+                <span>{{ article.likeCount }}点赞</span>
+                <br v-if="article.images && (article.images.length === 1 || article.images.length === 2)">
+                <span>{{ article.updateAt }}</span>
+                <span v-if="userId&&userId===article.author.id" @click.stop="onDelArticle(article.articleId)">删除</span>
             </div>
         </div>
-        <van-image v-if="article.cover.type===1" class="right-cover" :src="article.cover.images[0]" fit="cover">
+        <van-image v-if="article.images && (article.images.length === 1 || article.images.length === 2)" class="right-cover"
+            :src="article.images[0]" fit="cover">
         </van-image>
     </van-cell>
 </template>
 
 <script>
+import { getItem } from '@/utils/storage';
+import { reqDelArticle } from '@/api/article';
 export default {
     name: 'article-item',
     props: {
         article: {
             type: Object,
             required: true,
+            userId:null
         }
+    },
+    data() {
+        return {
+            showPopover: false,
+            actions: ['查看详情', '删除']
+        }
+    },
+    methods: {
+        onSelect(action) {
+            Toast(action.text);
+        },
+        onDelArticle(articleId){
+            this.$dialog.confirm({
+                message: '是否确认删除',
+            })
+                .then(async() => {
+                    // on confirm
+                    await reqDelArticle(articleId)
+                    this.$emit('onDelActicle')
+                })
+                .catch(() => {
+                    // on cancel
+                });
+        }
+    },
+    created(){
+        this.userId=getItem('userId')
     }
 }
 </script>

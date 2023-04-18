@@ -3,68 +3,47 @@ import request from "@/utils/request";
 export const reqLogin =(data)=>{
     return request({
         method:'POST',
-        url:'/v1_0/authorizations',
-        data
+        url:'/login',
+        data,
+        contentType: "application/json;charset=utf-8",
     })
 }
 
-export const reqCode =(mobile)=>{
+export const reqUserInfo=()=>{
     return request({
         method:'GET',
-        url:`/v1_0/sms/codes/${mobile}`
-    })
-}
-
-export const reqUserInfo=(token)=>{
-    return request({
-        method:'GET',
-        url:'/v1_0/user',
+        url:'/user/getUserInfo',
     })
 }
 
 export const reqChannels=()=>{
     return request({
         method:'GET',
-        url:'/v1_0/user/channels'
+        url:'/lable/getLableList'
     })
 }
 
-export const reqAddFollow=(userId)=>{
-    return request({
-        method:'POST',
-        url:'/v1_0/user/followings',
-        data:{
-            target:userId
-        }
-    })
-}
-
-export const reqDelFollow=(userId)=>{
-    return request({
-        method:'DELETE',
-        url:`/v1_0/user/followings/${userId}`
-    })
-}
-
-export const reqUserProfile=()=>{
-    return request({
-        method:'GET',
-        url:'/v1_0/user/profile'
-    })
-}
-
-export const reqUpdateUserProfile=(data)=>{
+export const reqUpdateUserName=(data)=>{
     return request({
         method:'PATCH',
-        url:'/v1_0/user/profile',
-        data
+        url:'/user/updateUserName',
+        data,
+        contentType: "application/json;charset=utf-8",
     })
 }
 
 export const reqUpdateUserPhoto=(data)=>{
     return request({
         method:'PATCH',
-        url:'/v1_0/user/photo',
-        data
+        url:'/upload/avatar',
+        data,
+        contentType:'multipart/form-data'
+    })
+}
+
+export const reqMyArticleList=(offset,size)=>{
+    return request({
+        method:'GET',
+        url:`/article/getArticleListByUserId?offset=${offset}&size=${size}`
     })
 }
