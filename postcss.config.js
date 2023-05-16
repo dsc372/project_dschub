@@ -11,7 +11,7 @@ module.exports = {
       },
       'postcss-pxtorem': {
         rootValue: 37.5,//根据设计稿来
-        propList: ['*']//处理px等所有单位
+        propList: ['*']//要转换的css属性
       }
     }
   }

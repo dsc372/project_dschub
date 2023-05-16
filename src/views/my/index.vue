@@ -39,7 +39,6 @@
 
 <script>
 import { reqUserInfo } from '@/api/user'
-import { Toast } from 'vant';
 export default {
     name: 'my',
     data() {
@@ -57,7 +56,6 @@ export default {
                     // on confirm
                     this.$store.commit('setUser', null)
                     this.$store.commit('setUserId', null)
-                    this.$store.commit('removeCachePage', 'tabbar')
                     this.$router.push('/login')
                 })
                 .catch(() => {
@@ -77,7 +75,7 @@ export default {
             }
         }
     },
-    created() {
+    mounted() {
         this.getUserInfo()
     },
     activated() {

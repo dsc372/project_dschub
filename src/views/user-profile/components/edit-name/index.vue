@@ -33,8 +33,7 @@ export default {
                     forbidClick: true
                 });
                 await reqUpdateUserName({ newName: this.message })
-                this.$emit('editNameSuccess', this.message)
-                Toast.success("操作成功");
+                this.$emit('editNameSuccess')
             }
             catch (error) {
                 if (error && error.response && error.response.status === 409) {

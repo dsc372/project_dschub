@@ -71,4 +71,11 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to,from,next)=>{
+  if(from.name==='login'){
+    location.reload()
+  }
+  next()
+})
+
 export default router

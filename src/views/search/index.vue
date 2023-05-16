@@ -1,7 +1,7 @@
 <template>
     <div class="search-container">
         <form action="/">
-            <van-search v-model="searchText" placeholder="请输入搜索关键字" show-action @search="onSearch(searchText)" @cancel="onCancel" @focus="isResultShow=false" @input="onInput"></van-search>
+            <van-search v-model="searchText" placeholder="请输入搜索关键字" show-action @cancel="onCancel" @focus="isResultShow=false" @input="onInput"></van-search>
         </form>
         <search-result v-if="isResultShow" :searchText="searchText"></search-result>
         <search-suggestion v-else-if="searchText" :searchSuggestionList="searchSuggestion" :searchText="searchText" @search="onSearch"></search-suggestion>
@@ -43,7 +43,6 @@ export default {
             if (this.searchText !== '') {
                 this.searchSuggestion.length=0
                 if(this.allSearchSuggestion.indexOf(val)!==-1){
-
                     this.searchSuggestion.push(val)
                 }
             }

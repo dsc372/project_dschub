@@ -8,7 +8,7 @@
             <van-badge color="#ccc">
                 <div class="channel-item-content">{{channel}}</div>
                 <template #content>
-                    <van-icon name="cross" class="badge-icon" v-if="userChannels.length>1"
+                    <van-icon name="cross" class="badge-icon" v-if="userChannels.length>1&&showCross"
                         @click="onChangeChannel(index,'del')" />
                 </template>
             </van-badge>
@@ -20,7 +20,7 @@
             <van-badge color="#ccc">
                 <div class="channel-item-content">{{channel}}</div>
                 <template #content>
-                    <van-icon name="plus" class="badge-icon" @click="onChangeChannel(index,'add')" />
+                    <van-icon name="plus" class="badge-icon" v-if="" @click="onChangeChannel(index,'add')" />
                 </template>
             </van-badge>
         </div>
@@ -31,7 +31,6 @@
 import { reqAllChannels, reqAddChannels, reqDelChannels } from '@/api/channel'
 import { Toast } from 'vant'
 import { mapState } from 'vuex'
-import { setItem } from '@/utils/storage'
 export default {
     name: 'channel-edit',
     data() {
@@ -68,7 +67,6 @@ export default {
         },
         async onChangeChannel(index, type) {
             if (type === 'add') {
-                if (this.user) {
                     try {
                         await reqAddChannels({
                             name:this.recommendChannels[index]
@@ -77,27 +75,26 @@ export default {
                     } catch (error) {
                         Toast.fail('添加频道失败')
                     }
-                } else {
-                    setItem('user-channels', this.userChannels)
-                }
+
             } else if (type === 'del') {
                 let channel=this.userChannels.splice(index, 1)
-                if (this.user) {
-                    try {
+                try {
                         await reqDelChannels({
                             name:channel[0]
                         })
                     } catch (error) {
                         Toast.fail('删除频道失败')
                     }
-                } else {
-                    setItem('user-channels', this.userChannels)
-                }
             }
         },
         onEdit() {
-            this.showCross = !this.showCross,
+            if(this.user){
+                this.showCross = !this.showCross,
                 this.editBtnText = this.showCross ? '完成' : '编辑'
+            }else{
+                Toast.fail('请先登录')
+                this.$router.push('/login')
+            }
         },
     },
     created() {

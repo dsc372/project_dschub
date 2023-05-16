@@ -31,20 +31,17 @@ export default {
     props: {
         article: {
             type: Object,
-            required: true,
-            userId:null
+            required: true
         }
     },
     data() {
         return {
             showPopover: false,
-            actions: ['查看详情', '删除']
+            actions: ['查看详情', '删除'],
+            userId:null
         }
     },
     methods: {
-        onSelect(action) {
-            Toast(action.text);
-        },
         onDelArticle(articleId){
             this.$dialog.confirm({
                 message: '是否确认删除',

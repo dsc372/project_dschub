@@ -8,9 +8,9 @@
         <van-cell title="昵称" is-link :value="userProfile.name" @click="onEditClick('showEditName')"></van-cell>
         <van-cell title="手机" :value="userProfile.phone"></van-cell>
         <van-popup v-model="showPopup" position="bottom" :style="{ height: showEditName||showEditPhoto ? '100%' : '50%' }">
-            <EditName :preName="userProfile.name" @editNameSuccess="onEditNameSuccess" v-if="showEditName"
+            <EditName :preName="userProfile.name" @editNameSuccess="onEditSuccess" v-if="showEditName"
                 @onClose="showPopup = false"></EditName>
-            <EditPhoto :newPhoto="newPhoto" v-if="showEditPhoto" @editPhotoSuccess="onEditPhotoSuccess" @onClose="showPopup = false"></EditPhoto>
+            <EditPhoto :newPhoto="newPhoto" v-if="showEditPhoto" @editPhotoSuccess="onEditSuccess" @onClose="showPopup = false"></EditPhoto>
         </van-popup>
     </div>
 </template>
@@ -53,19 +53,13 @@ export default {
             this[type] = true
             this.showPopup = true
         },
-        onEditNameSuccess(newName) {
-            this.showEditName = false
+        onEditSuccess() {
             this.showPopup = false
             location.reload()
-        },
-        onEditPhotoSuccess(file){
-            this.showEditPhoto=false
-            this.showPopup=false
-            location.reload()
+            Toast.success("操作成功");
         },
         onFileChange(){
-            this.showEditPhoto=true
-            this.showPopup=true
+            this.onEditClick('showEditPhoto')
             const file= this.$refs.file.files[0]
             this.newPhoto=file
             this.$refs.file.value=''

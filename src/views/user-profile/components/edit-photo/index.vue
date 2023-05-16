@@ -40,8 +40,7 @@ export default {
                 const fd=new FormData()
                 fd.append('avatar',file)
                 await reqUpdateUserPhoto(fd)
-                this.$emit('editPhotoSuccess',file)
-                Toast.success("操作成功");
+                this.$emit('editPhotoSuccess')
             }
             catch (error) {
                 Toast.fail("修改头像信息失败");

@@ -10,7 +10,6 @@
 import { reqArticles } from '@/api/article'
 import { Toast } from 'vant'
 import ArticleItem from '@/components/article-item/index.vue'
-import {debounce} from 'lodash'
 export default {
     name: "search-result",
     components: { ArticleItem },
@@ -21,7 +20,6 @@ export default {
             finished: false,
             offset: 0,
             size: 5,
-            scrollTop:0,
         };
     },
     props: {
@@ -46,15 +44,6 @@ export default {
                 Toast.fail("获取搜索结果失败");
             }
         },
-    },
-    mounted(){
-        const articleList=this.$refs['articleList']
-        articleList.onscroll=debounce(()=>{
-            this.scrollTop=articleList.scrollTop
-        },50)
-    },
-    activated(){
-        this.$refs['articleList'].scrollTop=this.scrollTop
     }
 }
 </script>
